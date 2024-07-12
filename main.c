@@ -13,8 +13,8 @@
 #include "./getDir.h"
 #include "./getFile.h"
 #include "./sortArray.h"
-#include "./strFileMode.h"
-#include "printListing.h"
+#include "./printListing.h"
+#include "./dirQueue.h"
 
 #ifdef DEBUG_MODE_ENABLED
 #include "./checkFlags.h"
@@ -25,6 +25,9 @@
 uint32_t app_flags = 0;
 
 int main(int argc, char *argv[]) {
+
+    Queue q;
+    initQueue(&q);
 
   struct stat *statv = NULL;
   struct fileListing *fl_arr;
@@ -46,7 +49,7 @@ int main(int argc, char *argv[]) {
               perror("error getting file");
           }
       } else{
-          getDir(".", &fl_arr, &file_count);
+          getDir(".");
       }    // checkFlags(app_flags);
   } else if (argc > 1) {
 
@@ -61,7 +64,7 @@ int main(int argc, char *argv[]) {
                     perror("error getting file");
                 }
             } else{
-                  getDir(".", &fl_arr, &file_count);
+                  getDir(".");
             }
         }
         continue;
@@ -80,7 +83,7 @@ int main(int argc, char *argv[]) {
                   perror("error getting file");
               }
           } else{
-              getDir(argv[i], &fl_arr, &file_count);
+              getDir(argv[i]);
           }
       }
       else if (filetype == S_IFREG) {

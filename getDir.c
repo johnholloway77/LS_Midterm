@@ -1,12 +1,9 @@
-#include <dirent.h>
-#include <errno.h>
-#include <limits.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <fts.h>
 #include <sys/limits.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "./fileListing.h"
 #include "./flags.h"
@@ -16,64 +13,69 @@ extern uint32_t app_flags;
 extern struct stat *statv;
 extern int statCount;
 
-int getDir(const char *path, struct fileListing **fl_arr, int *file_count) {
+void print_special_directories(const char *path) {
+    printf("File: %s/.\n", path);
+    printf("File: %s/..\n", path);
+}
 
-  DIR *d_ptr;
-  struct dirent *dir_ptr;
-  int show_a = 0;
-  int entry_count = 0;
-  int rowcount = 0;
-  char *entries[255];
+int getDir(char *path) {
 
-  char file_path[PATH_MAX];
-  char *abs_path;
+    struct fileListing *dir_fl_arr;
+    int file_count;
 
-  if ((d_ptr = opendir(path)) == NULL) {
-    fprintf(stderr, "Unable to open %s: %s\n", path, strerror(errno));
-    return -1;
-  }
+    char *paths[] = {path, NULL};
 
-  while ((dir_ptr = readdir(d_ptr)) != NULL) {
 
-    if (!(app_flags & A_FLAG)) {
-
-      if ((strcmp(dir_ptr->d_name, ".") == 0 ||
-           strcmp(dir_ptr->d_name, "..") == 0))
-        continue;
-    }
-
-    if ((strcmp(dir_ptr->d_name, ".") != 0 &&
-         strcmp(dir_ptr->d_name, "..") != 0)) {
-      if (!(app_flags & a_FLAG)) {
-        if (dir_ptr->d_name[0] == '.') {
-
-          continue;
+        FTS *file_system = fts_open(paths, FTS_SEEDOT | FTS_NOCHDIR | FTS_PHYSICAL, NULL);
+        if (!file_system) {
+            perror("fts_open");
+            exit(EXIT_FAILURE);
         }
-      }
-    }
 
-    snprintf(file_path, PATH_MAX, "%s/%s", path, dir_ptr->d_name);
+        FTSENT *node;
+        int is_new_directory = 0;
+        int subdir_count = 0;
 
-    if (getFile(file_path, fl_arr, file_count) != 0) {
-      perror("error getting file: ");
-      return -1;
-    }
+        while ((node = fts_read(file_system)) != NULL) {
 
-    //this seems like a bad ideas...
-    /*
-     * If the file is the directory entry or it's parent, rename the element just added to fileListing array
-     * to reflect it's relative name
-     */
-    if ((strcmp(dir_ptr->d_name, ".") == 0 ||
-         strcmp(dir_ptr->d_name, "..") == 0)){
+            if(!(app_flags & S_FLAG)){
+                if(node->fts_level > 1) continue;
+            }
 
-        (*fl_arr)[*file_count -1].name = dir_ptr->d_name;
-    }
-  }
+            switch (node->fts_info) {
+            case FTS_D:
+                subdir_count++;
+                //printf("Directory: %s\n", node->fts_path);
+                if((app_flags & S_FLAG)){
 
 
+                    if (is_new_directory) {
+                        printf("\n"); // Line break before listing a new directory's contents
+                    }
+                    printf("Directory: %s\n", node->fts_path);
+                    print_special_directories(node->fts_path);
+                    is_new_directory = 1;
+                    break;
+                }
+            case FTS_F:
+                printf("File: %s\n", node->fts_path);
+                break;
+            case FTS_DNR:
+                fprintf(stderr, "Cannot read directory: %s\n", node->fts_path);
+                break;
+            case FTS_ERR:
+                perror("fts_read");
+                break;
+            default:
+                break;
+            }
+        }
 
-  (void)closedir(d_ptr);
+        if (fts_close(file_system) < 0) {
+            perror("fts_close");
+            exit(EXIT_FAILURE);
+        }
+
 
   return 0;
 }

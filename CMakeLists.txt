@@ -30,7 +30,9 @@ add_executable(LS_Midterm main.c
     strFileSize.h
     strFileSize.c
     strFileName.h
-    strFileName.c)
+    strFileName.c
+    dirQueue.c
+    dirQueue.h)
 
 target_link_libraries(LS_Midterm m)
 

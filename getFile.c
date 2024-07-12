@@ -32,7 +32,7 @@ int getFile(const char *path, struct fileListing **fl_arr, int *file_count) {
   (*file_count)++;
 
   if(S_ISDIR(st.st_mode) && app_flags & R_FLAG){
-      getDir(path, fl_arr, file_count);
+      getDir(path);
   }
   else{
       struct fileListing *tmp_ptr;
