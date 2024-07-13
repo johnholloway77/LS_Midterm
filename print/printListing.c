@@ -96,27 +96,27 @@ int printListing(struct fileListing *fl_arr, int file_count) {
           int pwd_err = getpwuid_r(stuid, &pwd_result, pwd_buffer, PWD_BUFFER_SIZE, &pwd);
           int grp_err = getgrgid_r(stgid, &grp_result, grp_buffer, GRP_BUFFER_SIZE, &grp);
 
-          printf("pwd pointer value: %p\n", pwd);
-          printf("grp pointer  value: %p\n", grp);
+          //printf("pwd pointer value: %p\n", pwd);
+          //printf("grp pointer  value: %p\n", grp);
 
-          if (pwd_err != 0 || pwd == NULL) {
-              printf("getpwuid_r failed for UID %ld: %s\n", stuid, strerror(pwd_err));
-              printf("errno: %d\n", errno);
-              exit(3);
-          } else {
-              printf("getpwuid_r: %s\n", pwd->pw_name);
-          }
+          // if (pwd_err != 0 || pwd == NULL) {
+          //     printf("getpwuid_r failed for UID %ld: %s\n", stuid, strerror(pwd_err));
+          //     printf("errno: %d\n", errno);
+          //     exit(3);
+          // } else {
+          //     printf("getpwuid_r: %s\n", pwd->pw_name);
+          // }
 
-          if (grp_err != 0 || grp == NULL) {
-              printf("getgrgid_r failed for GID %ld: %s\n", stgid, strerror(grp_err));
-              printf("errno: %d\n", errno);
-              exit(3);
-          } else {
-              printf("getgrgid_r: %s\n", grp->gr_name);
-          }
+          // if (grp_err != 0 || grp == NULL) {
+          //     printf("getgrgid_r failed for GID %ld: %s\n", stgid, strerror(grp_err));
+          //     printf("errno: %d\n", errno);
+          //     exit(3);
+          // } else {
+          //     printf("getgrgid_r: %s\n", grp->gr_name);
+          // }
 
-          char *userName = pwd->pw_name;
-          char *groupName = grp->gr_name;
+          char *userName = pwd ? pwd->pw_name : "NULL-pwd-returned";
+          char *groupName = grp ? grp->gr_name : "NULL-grd-returned";;
 
         if (app_flags & o_FLAG) {
 
@@ -177,7 +177,7 @@ int printListing(struct fileListing *fl_arr, int file_count) {
       free(fl_arr[i].path);
     }
 
-    printf("%s\n", str_buf);
+    printf("%s\n\n", str_buf);
   }
 
   return 0;

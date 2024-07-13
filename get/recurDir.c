@@ -9,7 +9,7 @@
 
 #include "../file//fileListing.h"
 #include "../flags/flags.h"
-#include "../get/getFile.h"
+#include "../get/getDir.h"
 #include "../sort/sortArray.h"
 #include "../print/printListing.h"
 
@@ -26,8 +26,7 @@ void print_special_directories(const char *path) {
 
 int recurDir(char *path) {
 
-    struct fileListing *dir_fl_arr = malloc(sizeof(struct fileListing));;
-    int file_count = 0;
+
 
     char *paths[] = {path, NULL};
 
@@ -48,23 +47,8 @@ int recurDir(char *path) {
             if(node->fts_level > 1) continue;
         }
 
-        // if (!(app_flags & A_FLAG) && !(app_flags & a_FLAG)) {
-        //     if(node->fts_path[2] == '.'){
-        //         break;
-        //     }
-        // }
-        /*
-            if (getFile(node->fts_path, &dir_fl_arr, &file_count) != 0) {
-                perror("error getting file");
-            }
-
-
-
-            printf("node: %s\n", node->fts_path);
-            */
         switch (node->fts_info) {
         case FTS_D:
-            subdir_count++;
 
             if(app_flags & a_FLAG){
                 // get_dot_dirs(node->fts_path, &dir_fl_arr, &file_count);
@@ -72,18 +56,25 @@ int recurDir(char *path) {
 
             if((app_flags & R_FLAG)){
 
+                char *dirName = node->fts_path;
+                dirName += 2; //increase pointer to move forward 2 char
 
                 if (is_new_directory) {
-                    printf("\n"); // Line break before listing a new directory's contents
+                    printf("\n");
                 }
-                printf("Directory: %s\n", node->fts_path);
+                printf("Directory: %s\n", dirName);
                 //print_special_directories(node->fts_path);
                 //get_dot_dirs(node->fts_path, &dir_fl_arr, &file_count);
 
+                struct fileListing *dir_fl_arr = malloc(sizeof(struct fileListing));;
+                int file_count = 0;
 
-                char *dirName = node->fts_path;
-                printf("name: %s\n", dirName);
-                printf("name + 2: %s\n", dirName + 2);
+                getDir(dirName, &dir_fl_arr, &file_count);
+
+                sortArray(&dir_fl_arr, file_count);
+
+                printListing(dir_fl_arr, file_count);
+                free(dir_fl_arr);
 
                 is_new_directory = 1;
                 break;
@@ -113,10 +104,7 @@ int recurDir(char *path) {
 
     }
 
-    sortArray(&dir_fl_arr, file_count);
 
-    printListing(dir_fl_arr, file_count);
-    free(dir_fl_arr);
 
     if (fts_close(file_system) < 0) {
         perror("fts_close");

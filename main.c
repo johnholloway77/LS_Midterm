@@ -15,6 +15,7 @@
 #include "print/printListing.h"
 #include "queue/dirQueue.h"
 #include "sort/sortArray.h"
+#include "get/recurDir.h"
 
 #ifdef DEBUG_MODE_ENABLED
 #include "flags/checkFlags.h"
@@ -122,6 +123,10 @@ int main(int argc, char *argv[]) {
       sortArray(&fl_arr, file_count);
       printListing(fl_arr, file_count);
       free(fl_arr);
+
+      if(app_flags & R_FLAG){
+          recurDir(path);
+      }
 
   }
 

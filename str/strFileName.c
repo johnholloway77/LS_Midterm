@@ -22,8 +22,12 @@ char *strFileName(struct stat stat, char *name, char *path) {
     memset(buffer, 0, BUFFER_SIZE);
     int i = 0;
 
-    char *path_name = strrchr(path, '/');
-    path_name++;
+    char *path_name;
+    if((path_name  = strrchr(path, '/')) != NULL){
+        path_name++;
+    }
+    else path_name = strdup(path);
+
 
     if(!(strcmp("..", path_name) == 0) && !(strcmp(".", path_name) == 0)){
         if (app_flags & w_FLAG) {

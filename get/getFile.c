@@ -45,10 +45,14 @@ int getFile(const char *path, struct fileListing **fl_arr, int *file_count) {
   *fl_arr = tmp_ptr;
   strlcpy(path_str, path, sizeof(path_str));
 
-  char *tempName = strrchr(path, '/') + 1;
+  char *tempName;
 
-  (*fl_arr)[*file_count - 1].name = strdup(tempName);
-
+  if((tempName  = strrchr(path, '/')) != NULL){
+      tempName++;
+      (*fl_arr)[*file_count - 1].name = strdup(tempName);
+  }else{
+    (*fl_arr)[*file_count - 1].name = strdup(basename(abs_path));
+  }
   //(*fl_arr)[*file_count - 1].name = strdup(basename(abs_path));
 
   (*fl_arr)[*file_count - 1].st = st;
