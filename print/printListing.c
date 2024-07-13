@@ -5,19 +5,26 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <errno.h>
 
-#include "./fileListing.h"
-#include "./flags.h"
-#include "./strFileMode.h"
-#include "./strFileName.h"
-#include "./strFileSize.h"
-#include "./strFileTime.h"
+#include "../file/fileListing.h"
+#include "../flags/flags.h"
+#include "../str/strFileMode.h"
+#include "../str/strFileName.h"
+#include "../str/strFileSize.h"
+#include "../str/strFileTime.h"
 
 #define MAX_BUFFER_SIZE 255
+#define PWD_BUFFER_SIZE 4096
+#define GRP_BUFFER_SIZE 4096
 
 extern uint32_t app_flags;
 
 int printListing(struct fileListing *fl_arr, int file_count) {
+    char pwd_buffer[PWD_BUFFER_SIZE];
+    char grp_buffer[GRP_BUFFER_SIZE];
+    struct passwd pwd_result;
+    struct group grp_result;
 
   for (int i = 0; i < file_count; i++) {
 
@@ -77,8 +84,39 @@ int printListing(struct fileListing *fl_arr, int file_count) {
 
       if (app_flags & l_FLAG) {
 
-        char *userName = getpwuid(fl_arr[i].st.st_uid)->pw_name;
-        char *groupName = getgrgid(fl_arr[i].st.st_gid)->gr_name;
+
+          long stuid = fl_arr[i].st.st_uid;
+          long stgid = fl_arr[i].st.st_gid;
+
+          printf("DEBUG: uid: %ld gid: %ld\n", stuid, stgid);
+
+          struct passwd *pwd = NULL;
+          struct group *grp = NULL;
+
+          int pwd_err = getpwuid_r(stuid, &pwd_result, pwd_buffer, PWD_BUFFER_SIZE, &pwd);
+          int grp_err = getgrgid_r(stgid, &grp_result, grp_buffer, GRP_BUFFER_SIZE, &grp);
+
+          printf("pwd pointer value: %p\n", pwd);
+          printf("grp pointer  value: %p\n", grp);
+
+          if (pwd_err != 0 || pwd == NULL) {
+              printf("getpwuid_r failed for UID %ld: %s\n", stuid, strerror(pwd_err));
+              printf("errno: %d\n", errno);
+              exit(3);
+          } else {
+              printf("getpwuid_r: %s\n", pwd->pw_name);
+          }
+
+          if (grp_err != 0 || grp == NULL) {
+              printf("getgrgid_r failed for GID %ld: %s\n", stgid, strerror(grp_err));
+              printf("errno: %d\n", errno);
+              exit(3);
+          } else {
+              printf("getgrgid_r: %s\n", grp->gr_name);
+          }
+
+          char *userName = pwd->pw_name;
+          char *groupName = grp->gr_name;
 
         if (app_flags & o_FLAG) {
 
@@ -94,13 +132,14 @@ int printListing(struct fileListing *fl_arr, int file_count) {
                        userName, groupName, size_str, time_str);
         }
 
-        free(userName);
-        free(groupName);
+        //free(userName);
+        //free(groupName);
 
       } else if (app_flags & n_FLAG) {
 
         if (app_flags & o_FLAG) {
           char *arch = fl_arr[i].st.st_flags & UF_ARCHIVE ? "uarch" : "-";
+
           buf_pos += snprintf(
               str_buf + buf_pos, MAX_BUFFER_SIZE - buf_pos,
               "%s %ld %u %u %s %s %s ", mode_str, fl_arr[i].st.st_nlink,
@@ -120,6 +159,8 @@ int printListing(struct fileListing *fl_arr, int file_count) {
       free(size_str);
       free(time_str);
     }
+
+
 
     name_str = strFileName(fl_arr[i].st, fl_arr[i].name, fl_arr[i].path);
     if (name_str == NULL) {

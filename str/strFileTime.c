@@ -2,7 +2,7 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "./flags.h"
+#include "../flags/flags.h"
 
 extern uint32_t app_flags;
 char *strFileTime(struct stat st)

@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
-#include "./fileListing.h"
-#include "./flags.h"
+#include "../file/fileListing.h"
+#include "../flags/flags.h"
 
 extern uint32_t app_flags;
 

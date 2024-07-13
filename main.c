@@ -5,20 +5,20 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "./setFlags.h"
+#include "flags/setFlags.h"
 #include <stdlib.h>
 
-#include "./checkFileType.h"
-#include "./fileListing.h"
-#include "./getDir.h"
-#include "./getFile.h"
-#include "./sortArray.h"
-#include "./printListing.h"
-#include "./dirQueue.h"
+#include "file/checkFileType.h"
+#include "file/fileListing.h"
+#include "get/getDir.h"
+#include "get/getFile.h"
+#include "print/printListing.h"
+#include "queue/dirQueue.h"
+#include "sort/sortArray.h"
 
 #ifdef DEBUG_MODE_ENABLED
-#include "./checkFlags.h"
-#include "./flags.h"
+#include "flags/checkFlags.h"
+#include "flags/flags.h"
 #endif
 
 // initialize global flags variable
@@ -26,8 +26,9 @@ uint32_t app_flags = 0;
 
 int main(int argc, char *argv[]) {
 
-    Queue q;
-    initQueue(&q);
+  Queue q;
+  initQueue(&q);
+  char *path;
 
   struct stat *statv = NULL;
   struct fileListing *fl_arr;
@@ -44,13 +45,14 @@ int main(int argc, char *argv[]) {
 
   if (argc == 1) {
 
-      if(app_flags & d_FLAG){
-          if (getFile(".", &fl_arr, &file_count) != 0) {
-              perror("error getting file");
-          }
-      } else{
-          getDir(".");
-      }    // checkFlags(app_flags);
+    if (app_flags & d_FLAG) {
+      if (getFile(".", &fl_arr, &file_count) != 0) {
+        perror("error getting file");
+      }
+    } else {
+      //getDir(".");
+        enqueue(&q, ".");
+    }
   } else if (argc > 1) {
 
     for (int i = 1; i < argc; i++) {
@@ -59,13 +61,14 @@ int main(int argc, char *argv[]) {
         setFlags(argv[i]);
 
         if (argc == 2) {
-            if(app_flags & d_FLAG){
-                if (getFile(".", &fl_arr, &file_count) != 0) {
-                    perror("error getting file");
-                }
-            } else{
-                  getDir(".");
+          if (app_flags & d_FLAG) {
+            if (getFile(".", &fl_arr, &file_count) != 0) {
+              perror("error getting file");
             }
+          } else {
+            enqueue(&q, ".");
+            //getDir(".");
+          }
         }
         continue;
       }
@@ -78,19 +81,27 @@ int main(int argc, char *argv[]) {
       }
 
       if (filetype == S_IFDIR) {
-          if(app_flags & d_FLAG){
-              if (getFile(argv[i], &fl_arr, &file_count) != 0) {
-                  perror("error getting file");
-              }
-          } else{
-              getDir(argv[i]);
-          }
-      }
-      else if (filetype == S_IFREG) {
+        if (app_flags & d_FLAG) {
           if (getFile(argv[i], &fl_arr, &file_count) != 0) {
-              perror("error getting file");
+            perror("error getting file");
+          }
+        } else {
+          //getDir(argv[i]);
+            enqueue(&q, argv[i]);
+        }
+      } else if (filetype == S_IFREG) {
+        if (getFile(argv[i], &fl_arr, &file_count) != 0) {
+          perror("error getting file");
+        }
+      }
+      else if(filetype == S_IFLNK){
+          if(getFile(argv[i], &fl_arr, &file_count) != 0){
+              perror("error getting symlink file: ");
           }
       }
+
+
+
     }
   }
 
@@ -99,5 +110,20 @@ int main(int argc, char *argv[]) {
   printListing(fl_arr, file_count);
 
   free(fl_arr);
-  return 0;
+
+
+
+  while ((path = dequeue(&q)) != NULL){
+      fl_arr = malloc(sizeof(struct fileListing));
+      int file_count = 0;
+
+      getDir(path, &fl_arr, &file_count);
+
+      sortArray(&fl_arr, file_count);
+      printListing(fl_arr, file_count);
+      free(fl_arr);
+
+  }
+
+    return 0;
 }

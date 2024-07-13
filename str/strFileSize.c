@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "./flags.h"
+#include "../flags/flags.h"
 #define MAX_DIGITS 25
 
 extern uint32_t app_flags;

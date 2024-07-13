@@ -38,7 +38,7 @@ void enqueue(Queue *q, const char *path){
 
 char* dequeue(Queue *q){
     if(isEmpty(q)){
-        perror("Queue empty ");
+        //perror("Queue empty ");
         return NULL;
     }else{
         Node *temp = q->front;

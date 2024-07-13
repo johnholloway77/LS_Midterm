@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 13.0.1, 2024-07-08T23:41:41. -->
+<!-- Written by QtCreator 13.0.2, 2024-07-13T13:11:46. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -399,8 +399,7 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">CMakeProjectManager.CMakeRunConfiguration.LS_Midterm</value>
     <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">LS_Midterm</value>
     <value type="bool" key="ProjectExplorer.RunConfiguration.Customized">true</value>
-    <value type="QString" key="RunConfiguration.Arguments">-lR . .. LS_Midterm Makefile CMakeCache.txt
-</value>
+    <value type="QString" key="RunConfiguration.Arguments">-aAli</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
