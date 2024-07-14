@@ -29,7 +29,7 @@ int getDir(const char *path, struct fileListing **fl_arr, int *file_count) {
     while ((dir_ptr = readdir(d_ptr)) != NULL) {
 
 
-        // Skip hidden files unless either a_F A_FLAG is set
+        // Skip hidden files unless either a_FLAG A_FLAG is set
         if ((!(app_flags & A_FLAG) && dir_ptr->d_name[0] == '.') && (!(app_flags & a_FLAG) && dir_ptr->d_name[0] == '.') ){
             continue;
         }

@@ -32,12 +32,18 @@ int setFlags(const char *flag_str) {
       app_flags = app_flags | f_FLAG;
     }
     if (flag_str[i] == 'h') {
+        if(app_flags & k_FLAG){
+            app_flags = app_flags & ~k_FLAG;
+        }
       app_flags = app_flags | h_FLAG;
     }
     if (flag_str[i] == 'i') {
       app_flags = app_flags | i_FLAG;
     }
     if (flag_str[i] == 'k') {
+        if(app_flags & h_FLAG){
+            app_flags = app_flags & ~h_FLAG;
+        }
       app_flags = app_flags | k_FLAG;
     }
     if (flag_str[i] == 'l') {

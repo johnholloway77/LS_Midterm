@@ -46,16 +46,19 @@ int printListing(struct fileListing *fl_arr, int file_count) {
         }
 
         if (app_flags & s_FLAG) {
+
             char *blocksize = getenv("BLOCKSIZE");
-            if (blocksize != NULL) {
+            if (blocksize != NULL && strlen(blocksize) > 0) {
                 double blk_size = atof(blocksize);
-                double blocks = ceil(fl_arr[i].st.st_blksize / blk_size);
+                double blocks = ceil((double)fl_arr[i].st.st_blksize / blk_size);
+
                 buf_pos += snprintf(str_buf + buf_pos, MAX_BUFFER_SIZE - buf_pos, "%d ",
                                     (int)blocks);
             } else {
                 buf_pos += snprintf(str_buf + buf_pos, MAX_BUFFER_SIZE - buf_pos,
                                     "%ld ", fl_arr[i].st.st_blocks);
             }
+
         }
 
         if (app_flags & l_FLAG || app_flags & n_FLAG) {

@@ -41,9 +41,16 @@ int recurDir(char *path) {
 
         switch (node->fts_info) {
         case FTS_D:
-            if (app_flags & a_FLAG) {
-                // get_dot_dirs(node->fts_path, &dir_fl_arr, &file_count);
+
+            /*
+             * In standard ls application, recurisve calls still show hidden directories without A or a flags
+             * Therefore this section is being commented out for
+
+            // Skip hidden files unless either a_FLAG or A_FLAG is set
+            if (!(app_flags & A_FLAG) && node->fts_path[2] == '.') && (!(app_flags & a_FLAG) && node->fts_path[2] == '.') ){
+                continue;
             }
+            */
 
             if (app_flags & R_FLAG) {
                 char *dirName = node->fts_path;
