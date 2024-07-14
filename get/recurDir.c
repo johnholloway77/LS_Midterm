@@ -31,7 +31,7 @@ int recurDir(char *path) {
     char *paths[] = {path, NULL};
 
 
-    FTS *file_system = fts_open(paths, FTS_SEEDOT | FTS_NOCHDIR | FTS_PHYSICAL, NULL);
+    FTS *file_system = fts_open(paths,  FTS_NOCHDIR | FTS_PHYSICAL, NULL);
     if (!file_system) {
         perror("fts_open");
         exit(EXIT_FAILURE);
@@ -57,14 +57,12 @@ int recurDir(char *path) {
             if((app_flags & R_FLAG)){
 
                 char *dirName = node->fts_path;
-                dirName += 2; //increase pointer to move forward 2 char
+                //dirName += 2; //increase pointer to move forward 2 char
 
                 if (is_new_directory) {
                     printf("\n");
                 }
                 printf("Directory: %s\n", dirName);
-                //print_special_directories(node->fts_path);
-                //get_dot_dirs(node->fts_path, &dir_fl_arr, &file_count);
 
                 struct fileListing *dir_fl_arr = malloc(sizeof(struct fileListing));;
                 int file_count = 0;

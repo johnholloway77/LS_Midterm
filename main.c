@@ -115,17 +115,19 @@ int main(int argc, char *argv[]) {
 
 
   while ((path = dequeue(&q)) != NULL){
-      fl_arr = malloc(sizeof(struct fileListing));
-      int file_count = 0;
 
-      getDir(path, &fl_arr, &file_count);
-
-      sortArray(&fl_arr, file_count);
-      printListing(fl_arr, file_count);
-      free(fl_arr);
 
       if(app_flags & R_FLAG){
           recurDir(path);
+      } else{
+          struct fileListing *queue_fl_arr = malloc(sizeof(struct fileListing));
+          int queue_file_count = 0;
+
+          getDir(path, &queue_fl_arr, &queue_file_count);
+
+          //sortArray(&queue_fl_arr, queue_file_count);
+          printListing(queue_fl_arr, queue_file_count);
+          free(queue_fl_arr);
       }
 
   }

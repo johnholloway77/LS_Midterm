@@ -25,7 +25,8 @@ int compare_filetype_and_name(const void *a, const void *b){
         }
     }
 
-    return strcmp(fa->name, fb->name);
+    //return strcmp(fa->name, fb->name);
+    return strcmp(fa->path, fb->path);
 
 }
 
