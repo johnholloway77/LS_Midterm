@@ -22,6 +22,7 @@ makeMidterm [options] [path]
 
 ```sh
 ./LS_Midterm [option] [path] ...
+```
 
 Replace [options] with any applicable flags and [path] with the directories or files you want to analyze. The program will list the contents of the specified directory, formatted according to the provided options.
 
