@@ -1,0 +1,38 @@
+# Ignore Qt Creator user-specific files
+CMakeLists.txt.user
+*.pro.user
+*.qmake.stash
+*.pro.user.*
+
+# Ignore build directories and intermediate files
+build/
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+*.out
+*.log
+
+# Ignore IDE-specific files
+.vscode/
+.idea/
+*.iml
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore backup files
+*.bak
+*.tmp
+~*
+
+# Ignore cmake-generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+q
