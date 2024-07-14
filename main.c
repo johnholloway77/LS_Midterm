@@ -125,8 +125,9 @@ int main(int argc, char *argv[]) {
 
           getDir(path, &queue_fl_arr, &queue_file_count);
 
-          //sortArray(&queue_fl_arr, queue_file_count);
+          sortArray(&queue_fl_arr, queue_file_count);
           printListing(queue_fl_arr, queue_file_count);
+          free(path);
           free(queue_fl_arr);
       }
 

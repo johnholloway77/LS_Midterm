@@ -13,8 +13,7 @@
 #include <time.h>
 
 #include "../file/fileListing.h"
-#include "../flags//flags.h"
-#include "../get/getDir.h"
+
 
 extern uint32_t app_flags;
 int getFile(const char *path, struct fileListing **fl_arr, int *file_count) {

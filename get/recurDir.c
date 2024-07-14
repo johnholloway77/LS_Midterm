@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../file//fileListing.h"
+#include "../file/fileListing.h"
 #include "../flags/flags.h"
 #include "../get/getDir.h"
 #include "../sort/sortArray.h"
@@ -20,18 +20,12 @@ extern int statCount;
 void print_special_directories(const char *path) {
     printf("File: %s/.\n", path);
     printf("File: %s/..\n", path);
-
 }
 
-
 int recurDir(char *path) {
-
-
-
     char *paths[] = {path, NULL};
 
-
-    FTS *file_system = fts_open(paths,  FTS_NOCHDIR | FTS_PHYSICAL, NULL);
+    FTS *file_system = fts_open(paths,  FTS_NOCHDIR | FTS_LOGICAL, NULL);
     if (!file_system) {
         perror("fts_open");
         exit(EXIT_FAILURE);
@@ -39,32 +33,31 @@ int recurDir(char *path) {
 
     FTSENT *node;
     int is_new_directory = 0;
-    int subdir_count = 0;
 
     while ((node = fts_read(file_system)) != NULL) {
-
-        if(!(app_flags & R_FLAG)){
-            if(node->fts_level > 1) continue;
+        if (!(app_flags & R_FLAG)) {
+            if (node->fts_level > 1) continue;
         }
 
         switch (node->fts_info) {
         case FTS_D:
-
-            if(app_flags & a_FLAG){
+            if (app_flags & a_FLAG) {
                 // get_dot_dirs(node->fts_path, &dir_fl_arr, &file_count);
             }
 
-            if((app_flags & R_FLAG)){
-
+            if (app_flags & R_FLAG) {
                 char *dirName = node->fts_path;
-                //dirName += 2; //increase pointer to move forward 2 char
 
                 if (is_new_directory) {
                     printf("\n");
                 }
                 printf("Directory: %s\n", dirName);
 
-                struct fileListing *dir_fl_arr = malloc(sizeof(struct fileListing));;
+                struct fileListing *dir_fl_arr = malloc(sizeof(struct fileListing));
+                if (!dir_fl_arr) {
+                    perror("malloc");
+                    exit(EXIT_FAILURE);
+                }
                 int file_count = 0;
 
                 getDir(dirName, &dir_fl_arr, &file_count);
@@ -79,14 +72,10 @@ int recurDir(char *path) {
             }
         case FTS_F:
             if (!(app_flags & A_FLAG) && !(app_flags & a_FLAG)) {
-                if(node->fts_path[2] == '.'){
+                if (node->fts_path[2] == '.') {
                     break;
                 }
             }
-
-            //if (getFile(node->fts_path, &dir_fl_arr, &file_count) != 0) {
-            //        perror("error getting file");
-            //    }
 
             break;
         case FTS_DNR:
@@ -98,17 +87,12 @@ int recurDir(char *path) {
         default:
             break;
         }
-
-
     }
-
-
 
     if (fts_close(file_system) < 0) {
         perror("fts_close");
         exit(EXIT_FAILURE);
     }
-
 
     return 0;
 }
