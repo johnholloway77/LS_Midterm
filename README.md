@@ -32,6 +32,6 @@ make clean
 
 Replace [options] with any applicable flags and [path] with the directories or files you want to analyze. The program will list the contents of the specified directory, formatted according to the provided options.
 
-Memory Management
+##Memory Management
 This program has been carefully developed to handle memory management correctly, ensuring no memory leaks. Valgrind was used extensively to check for and fix any memory issues.
 
