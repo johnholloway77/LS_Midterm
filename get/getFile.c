@@ -4,11 +4,11 @@
 
 #include <grp.h>
 #include <libgen.h>
+#include <limits.h>
 #include <pwd.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <sys/syslimits.h>
 #include <sys/types.h>
 #include <time.h>
 
@@ -18,7 +18,6 @@
 extern uint32_t app_flags;
 int getFile(const char *path, struct fileListing **fl_arr, int *file_count) {
   struct stat st;
-  char *file_mode;
   char path_str[PATH_MAX];
   char *abs_path;
   abs_path = realpath(path, NULL);

@@ -90,6 +90,10 @@ int printListing(struct fileListing *fl_arr, int file_count) {
                 int pwd_err = getpwuid_r(stuid, &pwd_result, pwd_buffer, PWD_BUFFER_SIZE, &pwd);
                 int grp_err = getgrgid_r(stgid, &grp_result, grp_buffer, GRP_BUFFER_SIZE, &grp);
 
+                // Cast unused variables to void to suppress warnings
+                (void)pwd_err;
+                (void)grp_err;
+
                 char *userName = pwd ? pwd->pw_name : "NULL-pwd-returned";
                 char *groupName = grp ? grp->gr_name : "NULL-grd-returned";
 

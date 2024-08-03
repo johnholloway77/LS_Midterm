@@ -1,13 +1,12 @@
 #include <stdio.h>
-
+#include <stdlib.h>
 #include <stdint.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "flags/flags.h"
 #include "flags/setFlags.h"
-#include <stdlib.h>
-
 #include "file/checkFileType.h"
 #include "file/fileListing.h"
 #include "get/getDir.h"
@@ -19,7 +18,6 @@
 
 #ifdef DEBUG_MODE_ENABLED
 #include "flags/checkFlags.h"
-#include "flags/flags.h"
 #endif
 
 // initialize global flags variable
@@ -31,7 +29,6 @@ int main(int argc, char *argv[]) {
   initQueue(&q);
   char *path;
 
-  struct stat *statv = NULL;
   struct fileListing *fl_arr;
   fl_arr = malloc(sizeof(struct fileListing));
 

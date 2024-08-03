@@ -12,16 +12,22 @@ To build the program, follow these steps:
 1. Navigate to the main directory of the program.
 2. Run the following commands:
 ```sh
-mkdir build
-cd build
-cmake ..
-makeMidterm [options] [path]
+make
+```
+To remove the only object files after compiling the binary run the following command
+```sh
+make clean-obj
+```
+
+To remove all files created during the make process including the binary run the following
+```sh
+make clean
 ```
 
 ## Running the Program
 
 ```sh
-./LS_Midterm [option] [path] ...
+./ls_midterm [option] [path] ...
 ```
 
 Replace [options] with any applicable flags and [path] with the directories or files you want to analyze. The program will list the contents of the specified directory, formatted according to the provided options.
