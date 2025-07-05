@@ -1,9 +1,24 @@
 #include "flags.h"
 #include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 
-extern uint32_t app_flags;
+uint32_t app_flags;
+static int flags_set = 0;
+
+/*
+ * setFlags will set the value for app_flags
+ * only once, but not allow it to be set again
+ */
 int setFlags(const char *flag_str) {
+
+  if(flags_set){
+#ifdef DEBUG_MODE_ENABLED
+      fprintf(stderr, "Flags already set\n");
+#endif
+      return 0;
+  }
+
   int length = strlen(flag_str);
 
   for (int i = 1; i < length; i++) {
@@ -102,6 +117,11 @@ int setFlags(const char *flag_str) {
       app_flags = app_flags | w_FLAG;
     }
   }
+
+  flags_set = 1;
+#ifdef DEBUG_MODE_ENABLED
+    printf("Flags_set set to %d\n", flags_set);
+#endif
 
   return 0;
 }

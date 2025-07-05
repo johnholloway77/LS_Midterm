@@ -21,7 +21,7 @@
 #endif
 
 // initialize global flags variable
-uint32_t app_flags = 0;
+//uint32_t app_flags = 0;
 
 int main(int argc, char *argv[]) {
 
@@ -57,6 +57,17 @@ int main(int argc, char *argv[]) {
 
       if (argv[i][0] == '-') {
         setFlags(argv[i]);
+
+#ifdef DEBUG_MODE_ENABLED
+        // Flags will not be set again;
+        setFlags(argv[i]);
+
+        /*
+         * The following line will not be able to be compiled
+         * if included:.
+        */
+         //app_flags = 0;
+#endif
 
         if (argc == 2) {
           if (app_flags & d_FLAG) {
